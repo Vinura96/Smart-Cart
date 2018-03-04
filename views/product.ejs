@@ -1,0 +1,119 @@
+<html>
+<head>
+    	<!--<link rel=stylesheet type=text/css href="/css/login.css">-->
+      <script src="/js/js.cookie.js"></script>
+            <script src="/js/jquery-min.js"></script>
+</head>
+
+
+<body>
+<div class="product_details">
+  <h1><%=product.name%></h1>
+  <h2>Rs.<%=product.price%></h2>
+
+
+
+  <button onclick="goBack()">Go Back</button>
+<script>
+
+function goBack() {
+    window.history.back();
+}
+</script>
+
+
+  <img src="/images/<%=product.image%>" width=300px alt="lux">
+  <p><%=product.description%></p>
+  </div>
+
+
+
+  <!--display add to cart if in priority mode-->
+ <script>
+
+  if (Cookies.get("self_checkout")!==1){
+    $('#add').disabled=true;
+    $('#remove').disabled=true;
+    $('#bill').disabled=true;
+  }
+
+  $(document).ready(function(){
+    $('#add').click(function(){
+      var qty = prompt("Enter Quantity: ", 1);
+        $.post("/addToCart",
+        {
+          user_id: Cookies.get("user_id"),
+          id: <%=product.id%>,
+          qty: qty,
+          bill: Cookies.get('bill')
+        },
+        function(data,status){
+            alert("Added to cart");
+
+        });
+    });
+  });
+  </script>
+  <button id='add'>Add to Cart</button>
+  <br>
+
+
+    <!--display remove from cart if item is added-->
+ <script>
+  $(document).ready(function(){
+    $('#remove').click(function(){
+
+        $.post("/removeFromCart", {
+          user_id: Cookies.get("user_id"),
+          id: <%=product.id%>,
+          bill: Cookies.get('bill')
+        }, 
+        function(data,status){
+          console.log(status);
+          if (data=='success'){
+            alert("Removed from cart");
+          }
+            else{
+              alert("Item not in cart");
+            }
+          });
+
+        });
+    });
+
+  </script>
+  <button id='remove'>Remove from Cart</button>
+  <br>
+
+
+   <script>
+  $(document).ready(function(){
+    $('#bill').click(function(){
+    window.location.href = "/bill/"+Cookies.get('bill');
+        });
+    });
+
+  </script>
+ <button id='bill'>View cart</button>
+
+
+
+  <!--related products-->
+  <div class = "related_products">
+
+  <h2>Related products</h2>
+  <h4><a href='/product/<%=rel_prod[0].id%>'><%=rel_prod[0].name%></a></h4>
+  <img src="/images/<%=rel_prod[0].image%>" width=200px alt="p1">
+
+  <h4><a href='/product/<%=rel_prod[1].id%>'><%=rel_prod[1].name%></a></h4>
+  <img src="/images/<%=rel_prod[1].image%>" width=200px alt="p2">
+   </div>
+<br>
+   <div id="ad"><img src="/images/<%=ad%>" height=200px></div>
+
+
+
+</body>
+
+
+</html>

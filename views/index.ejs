@@ -1,0 +1,10 @@
+<% include partials/header %>
+<h1>hello <%= name %></h1>
+<ul>
+<% per.forEach(function(per){ %>
+	<li><%= per.name%></li>
+
+<% })%>
+</ul>
+
+<% include partials/footer %>

@@ -1,0 +1,136 @@
+<html>
+<head>
+    	<style media="screen" type="text/css">
+
+    		#blanket {
+				background-color:#111;
+				opacity: 0.65;
+				*background:none;
+				position:absolute;
+				z-index: 9001;
+				top:0px;
+				left:0px;
+				width:100%;
+				}
+
+				#popUpDiv {
+				position:absolute;
+				background:url(/images/map.jpg) no-repeat;
+				width:740px;
+				height:492px;
+				border:5px solid #000;
+				z-index: 9002;
+				}
+
+		</style>
+			<script type="text/javascript" src="/js/css-pop.js"></script>
+			<script src="/js/jquery-min.js"></script>
+			<script src="/js/js.cookie.js"></script>
+
+
+</head>
+
+
+
+
+<body>
+
+<!--set cookie for user id-->
+<script>
+Cookies.set('user_id', <%=id%>, { path: '/' });
+</script>
+
+
+
+<!--isle map button-->
+<div id="blanket" style="display:none"></div>
+<div id="popUpDiv" style="display:none">
+
+<a href="#" onclick="popup('popUpDiv')" >Close</a>
+</div>
+<a href="#" onclick="popup('popUpDiv')">Isle Map</a>
+
+
+<!-- display user name-->
+<h3><%= name %></h3>
+
+<!-- display ads-->
+<div class="w3-content w3-section" style="max-width:500px height:1000px">
+	<%for (i=0; i<adURLs.length; i++) {%>
+		<img class="mySlides" src="/images/<%=adURLs[i]%>" style="height:500px">
+	<%}%>
+
+</div>
+
+<!--javascript for slideshow-->
+<script>
+var slideIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none"; 
+    }
+    slideIndex++;
+    if (slideIndex > x.length) {slideIndex = 1} 
+    x[slideIndex-1].style.display = "block"; 
+    setTimeout(carousel, 3000); // Change image every 2 seconds
+}
+</script>
+
+
+<!-- display self checkout mode-->
+<% if (priviledge==1){%>
+	<script>
+	$(document).ready(function(){
+    $('#self_checkout').click(function(){
+        $.post("/self",
+        {
+          id: <%=id%>
+        },
+        function(data,status){
+            alert("Welcome to self checkout mode. Scan a product and click add to cart to add an item to your shopping cart. You can view your cart at any time using the 'my cart' button.");
+            Cookies.set('self_checkout', 1, { path: '/' });
+            console.log(data);
+            Cookies.set('bill', data, { path: '/' });
+
+        });
+        	this.disabled = true;
+    });
+	});
+	</script>
+	<button id='self_checkout'>Enter Self Checkout Mode</button>
+
+<%}%>
+
+
+
+<!-- display queue-->
+<div>
+<script>
+	$(document).ready(function(){
+    $('#queue').click(function(){
+        $.post("/queue",
+        {
+          id: <%=id%>
+        },
+        function(data,status){
+            alert("You've been entered to the queue. You wil be notified when a counter is available. Click leave queue to exit from queue.");
+            Cookies.set('queued', 1, { path: '/' });
+        });
+        	this.disabled = true;
+    });
+	});
+	</script>
+	<button id='queue'>Join Queue</button>
+	<h4><a href=#>leave queue</a></h4>
+	<h4><a href=#>view cart</a></h4>
+</div>
+
+	
+</body>
+</html>
+
+

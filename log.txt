@@ -1,0 +1,19 @@
+<notes>
+cookies would have to be deleted after each user
+
+<to do>
+add quantity selector to add to cart 
+//optional add remove from cart button to product page
+add bill display
+
+add product, customer, ad matching algorithm
+add queue management algorithm
+add queue alert system
+add self-checkout cashier-verify feature
+add bill email feature
+add CSS
+
+
+<extra>
+infra red ad beaming
+purchasing streaks

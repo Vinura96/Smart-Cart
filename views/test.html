@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pure JavaScript Popup</title>
+</head>
+<body>
+
+<!--This is the popup code for when the div is clicked:-->
+<script>
+function iconPop(){
+    document.getElementById('popcontent').innerHTML="You may click the X in the lower right corner to close this window or you may click outside of this window to close it as well.";
+    document.getElementById('thepopup').style.display="block";
+    document.getElementById('blackoutdiv').style.display="block";
+}//end iconPop JS function
+
+function iconUnPop(){
+    document.getElementById('thepopup').style.display="none";
+    document.getElementById('blackoutdiv').style.display="none";
+}
+</script>
+<!--this is the blackout div that blacks out the rest of the page when popup is popped:-->
+<div onclick="iconUnPop();" id="blackoutdiv" style="position:absolute; width:100%; height:100%; top:0px; left:0px;background-color:#222;opacity:0.6;z-index:9999;display:none"></div>
+
+<!--this is the popup html:-->
+<div id="thepopup" style="position:absolute; width:300px; height:150px; top:150px; left:50%; margin-left:-155px;border: 5px solid orange;background-color:white;z-index:99999;padding:15px;-webkit-border-radius:5px;border-radius:5px;display:none;"><span onclick="iconUnPop();" style="position:absolute;bottom:5px;right:5px;color:red;font-weight:bold;cursor:pointer" title="Close Window!">-X-</span><span id="popcontent"></span></div>
+<!--End pop up code when icon's clicked-->
+
+    
+    <!--this is the div that when clicked, causes the popup window to appear:-->
+    <div onclick="iconPop();" style="position:relative;top:75px;left:50%;margin-left:-170px;width:300px;height:200px;border:5px solid orange;-webkit-border-radius:5px;border-radius:5px;padding:30px;background-color:yellow;color:black">Click this div to open the Pure JavaScript Popup!</div>
+
+</body>
+</html>

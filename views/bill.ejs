@@ -1,0 +1,21 @@
+<html>
+<head>
+    	<!--<link rel=stylesheet type=text/css href="/css/login.css">-->
+      <script src="/js/js.cookie.js"></script>
+            <script src="/js/jquery-min.js"></script>
+</head>
+
+
+<body>
+<h1>my bill</h1>
+<ul>
+<%for (var i=0; i<items.length; i++){%>
+	<li><b> <%= items[i].id%> </b>	..........quantity:<%= items[i].qty%></li> 
+<%}%>
+</ul>
+
+
+
+
+</body>
+</html>

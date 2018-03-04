@@ -1,0 +1,24 @@
+<html>
+<head>
+    	<link rel=stylesheet type=text/css href="/css/login.css">
+</head>
+
+<div class="login-page">
+    <h1 class="message" align='center' >Hi. </h1>
+    <h2 class="message" align=center>Scan your loyalty card or enter your mobile number to proceed. </h2>
+  <div class="form">
+    
+    <% if(status=="error"){ %>
+
+    	<script>
+    		alert("Incorrect mobile number!!");
+    	</script>
+<% } %>
+    <form method="post" class="login-form" action="/login">
+      <input type="text" placeholder="mobile number" name='mobile'/>
+      <input type="submit" value="login" style="background-color: #40a040">
+
+    </form>
+  </div>
+</div>
+</html>
