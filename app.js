@@ -106,9 +106,19 @@ app.get('/', function(req, res, next){
     res.render('index', {name:'haritha', per:array1});
 })
 
+
+//display login page
 app.get('/login', function(req, res, next){
     res.render('login',{status:req.query.status});
 })
+
+
+
+//display IR beam ad
+app.get('/ad/:id', function(req, res, next){
+    res.render('beamAd',{ad: req.params.id});
+})
+
 
 
 //view bill
@@ -134,7 +144,7 @@ app.get('/bill/:id', function(req, res, next){
 			db.get(`SELECT name name from product WHERE id=?`, [row.product_id], (err, row) =>{
 				var product_name = row.name;
 				console.log('sdsd');
-				items.push({id: product_name, qty:quantity});	
+				items.push({name: product_name, qty:quantity});	
 			});
 			 	  	console.log(items);			
 		});
@@ -150,6 +160,54 @@ app.get('/bill/:id', function(req, res, next){
 
 });
 
+
+
+
+//view finalized bill
+//view bill
+app.get('/finalize/:id', function(req, res, next){
+	items=[];
+
+  let db = new sqlite3.Database('./supermarket.db', (err) => {
+  if (err) {
+    //console.error(err.message);
+  }
+  console.log('Connected to the supermarket database.');
+	});
+	let sql = `SELECT product_id product_id, qty qty FROM item WHERE bill_id =?`;
+	var amount = 0;
+
+  db.all(sql, [req.params.id], (err, rows) =>{
+	if(err) {
+		console.error(err.message);
+	}
+	else{
+	 	rows.forEach((row) => {
+	 		var quantity = row.qty;
+			db.get(`SELECT name name, price price from product WHERE id=?`, [row.product_id], (err, row) =>{
+				var product_name = row.name;
+				var cost = row.price*quantity;
+				amount += cost;
+				items.push({name: product_name, qty:quantity, price:cost });	
+			});
+			 	  				
+		});
+ 	}
+	});
+	db.close((err) => {
+		if (err) {
+			console.error(err.message);
+		}
+		console.log('Close the database connection.');
+			res.render('finalize',{items:items, amount: amount});
+		});
+
+});
+
+
+
+
+
 /*
 app.get('/add', function(req, res, next){
 	console.log('submit');
@@ -160,6 +218,52 @@ app.post('/users/add', function(req, res, next){
 	var newU = {name: req.body.name, age: req.body.age};
 })
 */
+
+//return checkout page
+app.get('/checkout/:id', function(req, res, next){
+    res.render('checkout',{bill: req.params.id});
+})
+
+
+
+
+//handle checkout verification
+app.post('/checkout', function(req, res, next){
+
+  let db = new sqlite3.Database('./supermarket.db', (err) => {
+  if (err) {
+    //console.error(err.message);
+  }
+  console.log('Connected to the supermarket database.');
+	});
+	console.log(req.body.bill);
+	console.log(req.body.id);
+	var valid=false;
+	status='invalid';
+	let sql = `SELECT product_id product_id FROM item WHERE bill_id =?`;
+
+  db.all(sql, [req.body.bill], (err, rows) =>{
+	if(err) {
+		console.error(err.message);
+	}
+	else{
+		rows.forEach((row) => {
+			 if (row.product_id == req.body.id){
+			 	valid=true;
+			 	res.send(201, 'valid');
+			 }
+		});
+		if (!valid){
+			res.send(201, 'invalid');
+		}
+		
+	}
+
+	
+	});
+});
+
+
 
 
 //handle login
@@ -236,7 +340,8 @@ app.post('/addToCart', function(req, res, next) {
 			});
 
 
-  		//check if the item already exists in the bill
+  		//check if the item already exists in the 
+
 		let sql = `SELECT qty qty FROM item WHERE bill_id =? and product_id=?`;
 
 		  db.all(sql, [req.body.bill, req.body.id], (err, rows) =>{
@@ -533,7 +638,93 @@ db.close((err) => {
 });
 
 
+//database management example code for buidling relationships between customers, prodcuts and advertisements
 
+
+//build product x product relationships.
+app.get('/prodxprod', function(req, res, next){
+
+
+  let db = new sqlite3.Database('./supermarket.db', (err) => {
+  if (err) {
+    //console.error(err.message);
+  }
+  console.log('Connected to the supermarket database.');
+	});
+	var amount = 0;
+
+db.serialize(() =>{
+
+  db.all(`SELECT id id FROM product`, [], (err, rows) =>{
+	if(err) {
+		console.error(err.message);
+	}
+	else{
+	 	rows.forEach((row) => {
+	 		var id1 = row.id;
+	 		db.all(`SELECT id id FROM product`, [], (err, rows) =>{
+	 		if(err) {
+				console.error(err.message);
+			}
+			else{
+	 			rows.forEach((row) => {
+	 				var id2 = row.id;
+			  		var count =0;
+
+			  		db.all(`SELECT bill bill_id, FROM item where product_id=?`, [id1], (err, rows) =>{
+	 					if(err) {
+							console.error(err.message);
+						}
+						else{
+	 						rows.forEach((row) => {
+	 							var bill=row.bill;
+	 							db.all(`SELECT prod2 product_id, FROM item where bill=? and product_id=?`, [bill, prod2], (err, rows) =>{
+	 								if(err) {
+										console.error(err.message);
+									}
+									else{
+	 									rows.forEach((row) => {
+	 										count+=1;
+
+	 									});
+	 								}
+	 							});
+
+
+
+
+	 						});
+	 					}
+	 				});
+
+
+			  		//create a new entry in the product x product data table
+		 			db.run(`INSERT INTO prod_x_prod_data(product_id, rel_product_id, connections) VALUES(?, ?,  ?)`, [id1, row.id2, count], function(err) {
+			    	if (err) {
+			      		return console.log(err.message);
+			    	}
+			    	console.log(`new connection created with id ${this.lastID}`);
+			  		});	
+				});
+	 		}
+			 	  				
+			});
+ 	
+		});
+	}
+});
+});
+//end of serialized block.
+
+
+	db.close((err) => {
+		if (err) {
+			console.error(err.message);
+		}
+		console.log('Close the database connection.');
+		});
+
+});
 
 
 

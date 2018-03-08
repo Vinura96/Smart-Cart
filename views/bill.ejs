@@ -7,13 +7,38 @@
 
 
 <body>
-<h1>my bill</h1>
+<h1>My Bill</h1>
 <ul>
 <%for (var i=0; i<items.length; i++){%>
-	<li><b> <%= items[i].id%> </b>	..........quantity:<%= items[i].qty%></li> 
+	<li><b> <%= items[i].name%> </b>	..........quantity: <%= items[i].qty%></li> 
 <%}%>
 </ul>
 
+
+  <button onclick="goBack()">Go Back</button>
+<script>
+
+function goBack() {
+    window.history.back();
+}
+</script>
+
+<!--cashiers only - checkout button-->
+   <script>
+   	var secretPin = 666;
+  $(document).ready(function(){
+    $('#checkout').click(function(){
+    	if (prompt("Enter cashier pin code: ")==secretPin){
+    		window.location.href = "/checkout/"+Cookies.get('bill');
+    	}
+    	else{
+    		alert('Error. Incorrect cashier key');
+    	}
+        });
+    });
+
+  </script>
+	<button id='checkout'>Checkout (cashiers only)</button>
 
 
 

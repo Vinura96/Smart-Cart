@@ -1,0 +1,26 @@
+<html>
+<head>
+    	<!--<link rel=stylesheet type=text/css href="/css/login.css">-->
+      <script src="/js/js.cookie.js"></script>
+            <script src="/js/jquery-min.js"></script>
+</head>
+
+
+
+<body>
+<h1>Final Bill</h1>
+<ul>
+<%for (var i=0; i<items.length; i++){%>
+	<li><b> <%= items[i].name%> </b>	..........quantity: <%= items[i].qty%>.............price: Rs.<%=items[i].price%></li> 
+<%}%>
+</ul>
+<br>
+<h3>Bill amount: Rs.<%=amount%></h3>
+
+	<script>
+		alert("Bill emailed. Thank you for shopping with us.");
+	</script>
+
+
+	</body>
+</html>

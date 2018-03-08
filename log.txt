@@ -1,19 +1,21 @@
 <notes>
 cookies would have to be deleted after each user
 
-<to do>
-add quantity selector to add to cart 
-//optional add remove from cart button to product page
-add bill display
+<to do>+
 
 add product, customer, ad matching algorithm
 add queue management algorithm
 add queue alert system
-add self-checkout cashier-verify feature
-add bill email feature
 add CSS
 
 
 <extra>
 infra red ad beaming
 purchasing streaks
+
+prod x prod -
+for each product1 in product:
+	for each product2 in product:
+		for each bill in item that the product1 appears in:
+			count occurances of product2 in item matching bill and add to prod x prod data;
+	choose the 2 records in prod x prod data where connections is highest;

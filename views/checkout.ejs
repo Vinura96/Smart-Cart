@@ -1,0 +1,54 @@
+<html>
+<head>
+    	<!--<link rel=stylesheet type=text/css href="/css/login.css">-->
+      <script src="/js/js.cookie.js"></script>
+            <script src="/js/jquery-min.js"></script>
+</head>
+
+
+<body>
+	
+
+
+<!-- send post to verify products
+bill id must be passed to this page
+-->
+<h3>Verification mode. Scan some items from the cart.</h3>
+<div>
+<script>
+	//product id passed from barcode scanner. Hardcoded for now. Actual functionality: when item is scanned, the below post function is automatically called.
+	$(document).ready(function(){
+    $('#verify').click(function(){
+        $.post("/checkout",
+        {
+          id: 1,
+          bill: <%=bill%>
+        },
+        function(data,status){
+        	if (data=='valid'){
+            	alert("Item successfully verified.");
+        	}
+        	else{
+        		alert('Warning. Item not verified');
+        	}
+        });
+    });
+	});
+
+
+	//finalize bill function
+  $(document).ready(function(){
+    $('#email').click(function(){
+    window.location.href = "/finalize/"+Cookies.get('bill');
+        });
+    });
+	</script>
+	<button id='verify'>verify</button>
+	<button id='email'>finalize and email bill</button>	
+</div>
+
+
+
+
+</body>
+</html>
