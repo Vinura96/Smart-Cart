@@ -3,32 +3,48 @@
     	<!--<link rel=stylesheet type=text/css href="/css/login.css">-->
       <script src="/js/js.cookie.js"></script>
             <script src="/js/jquery-min.js"></script>
+
+
+             <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <script type="text/javascript" src="/js/css-pop.js"></script>
+      <script src="/js/jquery-min.js"></script>
+      <script src="/js/js.cookie.js"></script>
 </head>
 
 
 <body>
+  <div class="container">
 <div class="product_details">
-  <h1><%=product.name%></h1>
-  <h2>Rs.<%=product.price%></h2>
+  <h1 class="bg-success" style="color:white"><%=product.name%></h1>
+  <h3>Rs.<%=product.price%></h3>
 
 
 
-  <button onclick="goBack()">Go Back</button>
-<script>
-
-function goBack() {
-    window.history.back();
-}
-</script>
+ 
 
 
   <img src="/images/<%=product.image%>" width=300px alt="lux">
   <p><%=product.description%></p>
   </div>
 
+<div class="row">
 
+  <div class="col-md-3">
+ <button class="btn btn-success" onclick="goBack()">Go Back</button>
+<script>
 
+function goBack() {
+    window.history.back();
+}
+</script>
+</div>
   <!--display add to cart if in priority mode-->
+  <div class="col-md-3">
  <script>
 
   if (Cookies.get("self_checkout")!==1){
@@ -54,11 +70,12 @@ function goBack() {
     });
   });
   </script>
-  <button id='add'>Add to Cart</button>
-  <br>
+  <button id='add' class="btn btn-success">Add to Cart</button>
+  </div>
 
 
     <!--display remove from cart if item is added-->
+    <div class="col-md-3">
  <script>
   $(document).ready(function(){
     $('#remove').click(function(){
@@ -81,10 +98,10 @@ function goBack() {
         });
     });
   </script>
-  <button id='remove'>Remove from Cart</button>
-  <br>
+  <button id='remove' class="btn btn-success">Remove from Cart</button>
+  </div>
 
-
+<div class="col-md-3">
    <script>
   $(document).ready(function(){
     $('#bill').click(function(){
@@ -93,25 +110,44 @@ function goBack() {
     });
 
   </script>
- <button id='bill'>View cart</button>
-
+ <button id='bill' class="btn btn-success">View cart</button>
+</div>
+</div>
+<br>
 
 
   <!--related products-->
   <div class = "related_products">
 
-  <h2>Shopping Streak offers. Add one of the following items to cart after purchasing the current item and receive a 10% discount!</h2>
+  <h3 style="background:grey">Shopping Streak offers. Add one of the following items to cart after purchasing the current item and receive a 10% discount!</h3>
+  <div class="container" style="background:lightgrey">
+
+<div class="row">
+
+  <div class="col-md-6">
   <h4><a href='/product/<%=rel_prod[0].id%>'><%=rel_prod[0].name%></a></h4>
   <img src="/images/<%=rel_prod[0].image%>" width=200px alt="p1">
+</div>
 
+<div class="col-md-6">
   <h4><a href='/product/<%=rel_prod[1].id%>'><%=rel_prod[1].name%></a></h4>
   <img src="/images/<%=rel_prod[1].image%>" width=200px alt="p2">
+</div>
+</div>
+</div>
    </div>
 <br>
+  <div class="panel panel-default">
+    <div style="background:grey" class="panel-heading">
+      <h4 class="panel-title">Related ads</h4>
+    </div>
+    <div class="panel-body" style="background:lightgrey">
    <div id="ad"><img src="/images/<%=ad%>" height=200px></div>
-
-
-
+ </div>
+ </div>
+ <br>
+ <br>
+</div>
 </body>
 
 

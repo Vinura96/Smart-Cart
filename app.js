@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
+var async = require('async');
 const sqlite3 = require('sqlite3').verbose();
 
 
@@ -653,7 +654,7 @@ app.get('/prodxprod', function(req, res, next){
 	});
 	var amount = 0;
 
-db.serialize(() =>{
+
 
   db.all(`SELECT id id FROM product`, [], (err, rows) =>{
 	if(err) {
@@ -671,40 +672,48 @@ db.serialize(() =>{
 	 				var id2 = row.id;
 			  		var count =0;
 
-			  		db.all(`SELECT bill bill_id, FROM item where product_id=?`, [id1], (err, rows) =>{
+			  		var asyncOps = [
+
+			  		function (done) {	
+			  		db.all(`SELECT bill_id bill_id FROM item where product_id=?`, [id1], (err, rows) =>{
 	 					if(err) {
 							console.error(err.message);
 						}
 						else{
 	 						rows.forEach((row) => {
-	 							var bill=row.bill;
-	 							db.all(`SELECT prod2 product_id, FROM item where bill=? and product_id=?`, [bill, prod2], (err, rows) =>{
+	 							var bill=row.bill_id;
+	 							db.all(`SELECT product_id product_id FROM item where bill_id=? and product_id=?`, [bill, id2], (err, rows) =>{
 	 								if(err) {
 										console.error(err.message);
 									}
 									else{
 	 									rows.forEach((row) => {
 	 										count+=1;
+	 										console.log(count);
 
 	 									});
 	 								}
 	 							});
-
-
-
-
 	 						});
 	 					}
 	 				});
-
-
-			  		//create a new entry in the product x product data table
-		 			db.run(`INSERT INTO prod_x_prod_data(product_id, rel_product_id, connections) VALUES(?, ?,  ?)`, [id1, row.id2, count], function(err) {
+			  		},
+	 				//count finishes at this point
+					//create a new entry in the product x product data table
+					function(count) {
+					console.log(id2, count, id1);
+		 			db.run(`INSERT INTO prod_x_prod_data(product_id, rel_product_id, connections) VALUES(?, ?,  ?)`, [id1, id2, count], function(err) {
 			    	if (err) {
 			      		return console.log(err.message);
 			    	}
 			    	console.log(`new connection created with id ${this.lastID}`);
 			  		});	
+			  		}
+			  		];
+			  		async.waterfall(asyncOps, function (err, results){
+			  			if (err) return console.log(err);
+			  		});			
+
 				});
 	 		}
 			 	  				
@@ -713,16 +722,10 @@ db.serialize(() =>{
 		});
 	}
 });
-});
-//end of serialized block.
 
 
-	db.close((err) => {
-		if (err) {
-			console.error(err.message);
-		}
-		console.log('Close the database connection.');
-		});
+
+
 
 });
 

@@ -3,6 +3,21 @@
     	<!--<link rel=stylesheet type=text/css href="/css/login.css">-->
       <script src="/js/js.cookie.js"></script>
             <script src="/js/jquery-min.js"></script>
+
+                           <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <script type="text/javascript" src="/js/css-pop.js"></script>
+      <script src="/js/jquery-min.js"></script>
+      <script src="/js/js.cookie.js"></script>
+               <style>
+           body {
+              background: linear-gradient(to bottom right, white, rgb(216, 216, 216));
+          }
+        </style>
 </head>
 
 
@@ -13,7 +28,8 @@
 <!-- send post to verify products
 bill id must be passed to this page
 -->
-<h3>Verification mode. Scan some items from the cart.</h3>
+<h3 class="bg-success" style="color:white">Verification mode. Scan some items from the cart.</h3>
+<br>
 <div>
 <script>
 	//product id passed from barcode scanner. Hardcoded for now. Actual functionality: when item is scanned, the below post function is automatically called.
@@ -43,8 +59,8 @@ bill id must be passed to this page
         });
     });
 	</script>
-	<button id='verify'>verify</button>
-	<button id='email'>finalize and email bill</button>	
+	<button id='verify' class="btn btn-success">verify</button>
+	<button id='email' class="btn btn-success">finalize and email bill</button>	
 </div>
 
 

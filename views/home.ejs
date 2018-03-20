@@ -23,9 +23,23 @@
 				}
 
 		</style>
+
+		   <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 			<script type="text/javascript" src="/js/css-pop.js"></script>
 			<script src="/js/jquery-min.js"></script>
 			<script src="/js/js.cookie.js"></script>
+
+
+			        <style>
+           body {
+              background: linear-gradient(to bottom right, white, rgb(216, 216, 216));
+          }
+        </style>
 
 
 </head>
@@ -34,26 +48,30 @@
 
 
 <body>
-
+<div class="container">
 <!--set cookie for user id-->
 <script>
 Cookies.set('user_id', <%=id%>, { path: '/' });
 </script>
 
-
-
+<div class="row">
 <!--isle map button-->
+<div class="col-md-1">
 <div id="blanket" style="display:none"></div>
 <div id="popUpDiv" style="display:none">
 
-<a href="#" onclick="popup('popUpDiv')" >Close</a>
+<button onclick="popup('popUpDiv')" class="btn btn-success">Close</button>
 </div>
-<a href="#" onclick="popup('popUpDiv')">Isle Map</a>
+<button onclick="popup('popUpDiv')" class="btn btn-success">Isle Map</button>
+</div>
+
 
 
 <!-- display user name-->
-<h3><%= name %></h3>
-
+<div class="col-md-11">
+<h3 class="bg-success" style="color:white">	 Welcome  <%= name %></h3>
+</div>
+</div>
 <!-- display ads-->
 <div class="w3-content w3-section" style="max-width:500px height:1000px">
 	<%for (i=0; i<adURLs.length; i++) {%>
@@ -79,9 +97,14 @@ function carousel() {
     setTimeout(carousel, 3000); // Change image every 2 seconds
 }
 </script>
+<br>
 
 
+
+
+<div class ="row">
 <!-- display self checkout mode-->
+<div class="col-md-3">
 <% if (priviledge==1){%>
 	<script>
 	$(document).ready(function(){
@@ -101,13 +124,15 @@ function carousel() {
     });
 	});
 	</script>
-	<button id='self_checkout'>Enter Self Checkout Mode</button>
-
+	<button id='self_checkout' class="btn btn-success">Enter Self Checkout Mode</button>
+</div>
 <%}%>
 
 
 
-<!-- display queue-->
+<!-- display queue button-->
+<div class="col-md-3">
+
 <div>
 <script>
 	$(document).ready(function(){
@@ -124,11 +149,26 @@ function carousel() {
     });
 	});
 	</script>
-	<button id='queue'>Join Queue</button>
-	<h4><a href=#>leave queue</a></h4>
-	<h4><a href=#>view cart</a></h4>
-</div>
+	<button id='queue' class="btn btn-success">Join Queue</button>
+	</div>
+	</div>
 
+		<div class="col-md-3">
+	<button id="leave" class="btn btn-success">leave queue</button>  </div>
+
+   <script>
+  $(document).ready(function(){
+    $('#bill').click(function(){
+    window.location.href = "/bill/"+Cookies.get('bill');
+        });
+    });
+
+  </script>
+  <div class="col-md-3"> <button id="bill" class="btn btn-success">view cart</button></div>
+
+</div>
+</div>
+</div>
 	
 </body>
 </html>
