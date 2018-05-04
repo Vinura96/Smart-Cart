@@ -1,13 +1,44 @@
 var express = require('express');
+var firebase = require ("firebase");
 var bodyParser = require('body-parser');
 var path = require('path');
 var async = require('async');
 const sqlite3 = require('sqlite3').verbose();
+var http = require('http');
+var PythonShell = require('python-shell');
 
 
 var app = express();
 
 var array1=[];
+
+
+
+
+
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDiWj84GS73KW_R5qLTUpvTXVbIRUAuNsQ",
+    authDomain: "supercart-f83c1.firebaseapp.com",
+    databaseURL: "https://supercart-f83c1.firebaseio.com",
+    projectId: "supercart-f83c1",
+    storageBucket: "supercart-f83c1.appspot.com",
+    messagingSenderId: "122025235969"
+  };
+	firebase.initializeApp(config);
+	
+	//firebase database
+	var database = firebase.database();
+
+	//write to firebase
+/* 	function writeProductData(key) {
+		firebase.database().ref('products/').push().set({
+			name: key
+		});
+		} */
+
+
 
 /*
 let db = new sqlite3.Database('./supermarket.db', (err) => {
@@ -19,7 +50,6 @@ let db = new sqlite3.Database('./supermarket.db', (err) => {
 
 db.serialize(() => {
   db.each(`SELECT id as id,
-                  img as img
            FROM ad`, (err, row) => {
     if (err) {
       console.error(err.message);
@@ -117,8 +147,34 @@ app.get('/login', function(req, res, next){
 
 //display IR beam ad
 app.get('/ad/:id', function(req, res, next){
-    res.render('beamAd',{ad: req.params.id});
-})
+	isle=[];
+
+    let db = new sqlite3.Database('./supermarket.db', (err) => {
+        if (err) {
+            //console.error(err.message);
+        }
+        console.log('Connected to the supermarket database.');
+});
+    let sql = `SELECT id id, isle_name isle_name, img img FROM beam WHERE id =?`;
+
+
+    db.all(sql, [req.params.id], (err, rows) =>{
+        if(err) {
+            console.error(err.message);
+        }
+        else{
+        	console.log("CVB");
+        	rows.forEach((row)=> {
+            isle.push(row);
+});
+    res.render('beamAd', {isle:isle[0]});
+}
+
+
+
+
+});
+});
 
 
 
@@ -222,6 +278,10 @@ app.post('/users/add', function(req, res, next){
 
 //return checkout page
 app.get('/checkout/:id', function(req, res, next){
+    // PythonShell.run('ir_hasher.py', function (err) {
+    //     if (err) throw err;
+    //     console.log('finished');
+    // });
     res.render('checkout',{bill: req.params.id});
 })
 
@@ -451,11 +511,36 @@ app.post('/queue', function(req, res, next) {
 
 
 //product page
+
+app.get('/test', function(req, res, next){
+
+	var productKeyRef = firebase.database().ref('products/').orderByKey().limitToLast(1);
+productKeyRef.on('value', function(snapshot) {
+	for (var pro in snapshot.val()){
+		console.log(snapshot.val()[pro]["name"]);
+		res.redirect('/product/3');
+		
+	} 
+	
+	//updateStarCount(postElement, snapshot.val()[-1].name);
+});
+
+})
+
+
+
 app.get('/product/:id', function(req, res, next){
 	product=[];
 	 relIDs=[];
 	 adIDs=[];
 	 ad=[];
+
+	 //writeProductData("Milo");
+	 
+			//listen to firebase database
+
+
+
 	let db = new sqlite3.Database('./supermarket.db', (err) => {
 		  if (err) {
 		    //console.error(err.message);
@@ -734,4 +819,11 @@ app.get('/prodxprod', function(req, res, next){
 app.listen(3000, function(){
           console.log("server on 3000");
         })
+
+
+//llisten to firebase server
+		
+
+
+
 

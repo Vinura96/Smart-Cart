@@ -1,6 +1,7 @@
 <html>
 <head>
     	<link rel=stylesheet type=text/css href="/css/login.css">
+    <script src="/js/sweetalert.min.js"></script>
 </head>
 
 <div class="login-page">
@@ -11,7 +12,8 @@
     <% if(status=="error"){ %>
 
     	<script>
-    		alert("Incorrect mobile number!!");
+
+    		swal("Incorrect mobile number!!");
     	</script>
 <% } %>
     <form method="post" class="login-form" action="/login">

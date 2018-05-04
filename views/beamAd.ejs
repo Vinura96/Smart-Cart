@@ -3,21 +3,32 @@
     	<!--<link rel=stylesheet type=text/css href="/css/login.css">-->
       <script src="/js/js.cookie.js"></script>
             <script src="/js/jquery-min.js"></script>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script type="text/javascript" src="/js/css-pop.js"></script>
+    <script src="/js/jquery-min.js"></script>
+    <script src="/js/js.cookie.js"></script>
+
 </head>
 
 
 <body>
-
-<button onclick="goBack()">Close Ad</button>
+<h1>Welcome to the <%=isle.isle_name%> isle</h1>
+<button onclick="closeWindow()" class="btn btn-success">Close Ad</button>
 <br>
 
 <script>
-function goBack() {
-    window.history.back();
+function closeWindow() {
+    close();
 }
 </script>
 
-<img src="/images/a<%= ad %>.jpg" height=600px alt='beam ad'>
+<img src="/images/b<%= isle.img %>.jpg" height=600px alt='beam ad'>
 
 
 

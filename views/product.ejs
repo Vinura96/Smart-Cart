@@ -1,8 +1,11 @@
 <html>
 <head>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>  
+  <script src="/js/firebaseCode.js"></script> 
     	<!--<link rel=stylesheet type=text/css href="/css/login.css">-->
       <script src="/js/js.cookie.js"></script>
             <script src="/js/jquery-min.js"></script>
+    <script src="/js/sweetalert.min.js"></script>
 
 
              <!-- Required meta tags -->
@@ -39,7 +42,7 @@
 <script>
 
 function goBack() {
-    window.history.back();
+  window.location.replace("/home/?id="+Cookies.get("user_id"));
 }
 </script>
 </div>
@@ -64,7 +67,7 @@ function goBack() {
           bill: Cookies.get('bill')
         },
         function(data,status){
-            alert("Added to cart");
+            swal("Added to cart");
 
         });
     });
@@ -88,10 +91,10 @@ function goBack() {
         function(data,status){
           console.log(status);
           if (data=='success'){
-            alert("Removed from cart");
+            swal("Removed from cart");
           }
             else{
-              alert("Item not in cart");
+              swal("Item not in cart");
             }
           });
 

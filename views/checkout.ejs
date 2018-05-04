@@ -1,7 +1,71 @@
+<!-- TODO: disable checkout button if prodID = 0
+-->
+
 <html>
 <head>
     	<!--<link rel=stylesheet type=text/css href="/css/login.css">-->
       <script src="/js/js.cookie.js"></script>
+              <!--firebase script-->
+ 
+              <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script> 
+              <script>
+              
+              
+          // Initialize Firebase
+          
+          var config = {
+            apiKey: "AIzaSyDiWj84GS73KW_R5qLTUpvTXVbIRUAuNsQ",
+            authDomain: "supercart-f83c1.firebaseapp.com",
+            databaseURL: "https://supercart-f83c1.firebaseio.com",
+            projectId: "supercart-f83c1",
+            storageBucket: "supercart-f83c1.appspot.com",
+            messagingSenderId: "122025235969"
+          };
+          var prodID=0;
+
+          firebase.initializeApp(config);
+          var database = firebase.database();
+            var count = 0
+            //get product key from firebase
+         	var productKeyRef = firebase.database().ref('products/').orderByKey().limitToLast(1);
+			productKeyRef.on('value', function(snapshot) {
+                count=count+1;
+				for (var pro in snapshot.val()){
+                    var key=snapshot.val()[pro]["name"];
+                    console.log(key);
+                    if (count>1){
+                        if (key== "signal"){
+                            prodID=2;
+                        } else if (key== "ambewela"){
+                            prodID=3;
+                        } else if (key== "sunlight"){
+                            prodID=1;
+                        }
+                        console.log(prodID)
+                        //check if the item is in bill
+                        $.post("/checkout",
+                        {
+                          id: prodID,
+                          bill: <%=bill%>
+                        },
+                        function(data,status){
+                            if (data=='valid'){
+                                swal("Item successfully verified.");
+                            }
+                            else{
+                                swal('Warning. Item not verified');
+                            }
+                        });
+                    }
+
+				}
+				
+					
+				 
+			});
+
+
+              </script> 
             <script src="/js/jquery-min.js"></script>
 
                            <!-- Required meta tags -->
@@ -18,6 +82,7 @@
               background: linear-gradient(to bottom right, white, rgb(216, 216, 216));
           }
         </style>
+    <script src="/js/sweetalert.min.js"></script>
 </head>
 
 
@@ -32,20 +97,22 @@ bill id must be passed to this page
 <br>
 <div>
 <script>
+    //alternate code for verify button
 	//product id passed from barcode scanner. Hardcoded for now. Actual functionality: when item is scanned, the below post function is automatically called.
 	$(document).ready(function(){
     $('#verify').click(function(){
+        console.log(prodID)
         $.post("/checkout",
         {
-          id: 1,
+          id: prodID,
           bill: <%=bill%>
         },
         function(data,status){
         	if (data=='valid'){
-            	alert("Item successfully verified.");
+            	swal("Item successfully verified.");
         	}
         	else{
-        		alert('Warning. Item not verified');
+        		swal('Warning. Item not verified');
         	}
         });
     });
@@ -58,8 +125,10 @@ bill id must be passed to this page
     window.location.href = "/finalize/"+Cookies.get('bill');
         });
     });
-	</script>
-	<button id='verify' class="btn btn-success">verify</button>
+    </script>
+    
+
+	
 	<button id='email' class="btn btn-success">finalize and email bill</button>	
 </div>
 

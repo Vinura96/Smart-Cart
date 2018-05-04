@@ -1,6 +1,12 @@
 <html>
 <head>
+        <!--firebase script-->
+ 
+        <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script> 
+    <script src="/js/firebaseCode.js"></script> 
+	<script src="/js/sweetalert.min.js"></script>
     	<style media="screen" type="text/css">
+
 
     		#blanket {
 				background-color:#111;
@@ -114,7 +120,7 @@ function carousel() {
           id: <%=id%>
         },
         function(data,status){
-            alert("Welcome to self checkout mode. Scan a product and click add to cart to add an item to your shopping cart. You can view your cart at any time using the 'my cart' button.");
+            swal("Welcome to self checkout mode. Scan a product and click add to cart to add an item to your shopping cart. You can view your cart at any time using the 'my cart' button.");
             Cookies.set('self_checkout', 1, { path: '/' });
             console.log(data);
             Cookies.set('bill', data, { path: '/' });
@@ -142,7 +148,7 @@ function carousel() {
           id: <%=id%>
         },
         function(data,status){
-            alert("You've been entered to the queue. You wil be notified when a counter is available. Click leave queue to exit from queue.");
+            swal("You've been entered to the queue. You wil be notified when a counter is available. Click leave queue to exit from queue.");
             Cookies.set('queued', 1, { path: '/' });
         });
         	this.disabled = true;
