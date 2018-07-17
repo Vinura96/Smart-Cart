@@ -53,6 +53,7 @@ function goBack() {
  <script>
 
   if (Cookies.get("self_checkout")!==1){
+    console.log("dis")
     $('#add').disabled=true;
     $('#remove').disabled=true;
     $('#bill').disabled=true;
@@ -60,18 +61,23 @@ function goBack() {
 
   $(document).ready(function(){
     $('#add').click(function(){
-      var qty = prompt("Enter Quantity: ", 1);
-        $.post("/addToCart",
-        {
-          user_id: Cookies.get("user_id"),
-          id: <%=product.id%>,
-          qty: qty,
-          bill: Cookies.get('bill')
-        },
-        function(data,status){
-            swal("Added to cart");
+      if (Cookies.get("self_checkout")==1){
 
-        });
+        var qty = prompt("Enter Quantity: ", 1);
+          $.post("/addToCart",
+          {
+            user_id: Cookies.get("user_id"),
+            id: <%=product.id%>,
+            qty: qty,
+            bill: Cookies.get('bill')
+          },
+          function(data,status){
+              swal("Added to cart");
+
+          });
+        }else{
+          swal("Please enter self checkout mode");
+        }
     });
   });
   </script>
@@ -84,7 +90,7 @@ function goBack() {
  <script>
   $(document).ready(function(){
     $('#remove').click(function(){
-
+      if (Cookies.get("self_checkout")==1){
         $.post("/removeFromCart", {
           user_id: Cookies.get("user_id"),
           id: <%=product.id%>,
@@ -99,6 +105,10 @@ function goBack() {
               swal("Item not in cart");
             }
           });
+        }
+        else{
+          swal("Please enter self checkout mode");
+        }
 
         });
     });
@@ -175,6 +185,7 @@ function goBack() {
     listener.sequence_combo("a d d", function() {
       
       var qty = 1
+      if (Cookies.get("self_checkout")==1){
       $.post("/addToCart",
         {
           user_id: Cookies.get("user_id"),
@@ -187,10 +198,14 @@ function goBack() {
             swal("Added to cart");
         });
         swal("Added to cart");
+      }else{
+        swal("Please enter self checkout mode first");
+      }
     }, true);
 
      //listen to remove from cart button
     listener.sequence_combo("r e m", function() {
+      if (Cookies.get("self_checkout")==1){
       $.post("/removeFromCart", {
           user_id: Cookies.get("user_id"),
           id: <%=product.id%>,
@@ -205,6 +220,10 @@ function goBack() {
               swal("Item not in cart");
             }
           });
+        }
+          else{
+            swal("Please enter self checkout mode first");
+          }
     }, true);
     </script>
 

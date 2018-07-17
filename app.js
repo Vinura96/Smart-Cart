@@ -700,12 +700,13 @@ app.get('/prodxprod', function(req, res, next){
 	var amount = 0;
 
 
-
+//select each product
   db.all(`SELECT id id FROM product`, [], (err, rows) =>{
 	if(err) {
 		console.error(err.message);
 	}
 	else{
+		//select each product for each product
 	 	rows.forEach((row) => {
 	 		var id1 = row.id;
 	 		db.all(`SELECT id id FROM product`, [], (err, rows) =>{
@@ -713,6 +714,7 @@ app.get('/prodxprod', function(req, res, next){
 				console.error(err.message);
 			}
 			else{
+				//get bills with the first product
 	 			rows.forEach((row) => {
 	 				var id2 = row.id;
 			  		var count =0;
@@ -725,6 +727,7 @@ app.get('/prodxprod', function(req, res, next){
 							console.error(err.message);
 						}
 						else{
+							//count the number of above bills where product 2 also appears
 	 						rows.forEach((row) => {
 	 							var bill=row.bill_id;
 	 							db.all(`SELECT product_id product_id FROM item where bill_id=? and product_id=?`, [bill, id2], (err, rows) =>{
