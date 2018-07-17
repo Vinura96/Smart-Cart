@@ -4,6 +4,8 @@
  
         <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script> 
     <script src="/js/firebaseCode.js"></script> 
+
+    <script src="/js/keypress.js"></script>    
 	<script src="/js/sweetalert.min.js"></script>
     	<style media="screen" type="text/css">
 
@@ -58,6 +60,7 @@
 <!--set cookie for user id-->
 <script>
 Cookies.set('user_id', <%=id%>, { path: '/' });
+
 </script>
 
 <div class="row">
@@ -74,8 +77,24 @@ Cookies.set('user_id', <%=id%>, { path: '/' });
 
 
 <!-- display user name-->
-<div class="col-md-11">
+<div class="col-md-8">
 <h3 class="bg-success" style="color:white">	 Welcome  <%= name %></h3>
+</div>
+
+<!-- display log out-->
+<div class="col-md-3">
+        <script>
+                $(document).ready(function(){
+                  $('#logOut').click(function(){
+                    Cookies.remove('bill');
+                    Cookies.set('self_checkout', 0, { path: '/' });
+                    window.location.href = "/login";
+                      });
+                     });
+              
+                </script>
+                <div class="col-md-3"> <button id="logOut" class="btn btn-success">log out</button></div>
+    
 </div>
 </div>
 <!-- display ads-->
@@ -141,7 +160,9 @@ function carousel() {
 
 <div>
 <script>
+
 	$(document).ready(function(){
+   
     $('#queue').click(function(){
         $.post("/queue",
         {
@@ -159,9 +180,37 @@ function carousel() {
 	</div>
 	</div>
 
-		<div class="col-md-3">
-	<button id="leave" class="btn btn-success">leave queue</button>  </div>
 
+
+
+    <!-- leave queue button-->
+<div class="col-md-3">
+
+        <div>
+        <script>
+        
+            $(document).ready(function(){
+           
+            $('#leave').click(function(){
+                $.post("/leaveQueue",
+                {
+                  id: <%=id%>
+                },
+                function(data,status){
+                    swal("You've left the queue.");
+                    Cookies.set('queued', 0, { path: '/' });
+                });
+                    this.disabled = true;
+            });
+            });
+            </script>
+	        <button id="leave" class="btn btn-success">leave queue</button> 
+            </div>
+            </div>
+
+
+
+    <!-- view cart button-->
    <script>
   $(document).ready(function(){
     $('#bill').click(function(){
@@ -175,8 +224,30 @@ function carousel() {
 </div>
 </div>
 </div>
-	
+
+
+<!-- listen to barcode reader -->
+<script>
+var listener = new window.keypress.Listener();
+
+
+listener.sequence_combo("8 9 0 1 0 3 0 4 1 0 9 1 8", function() {
+    window.location.replace("/product/2");
+}, true);
+
+listener.sequence_combo("4 7 9 2 0 2 4 0 1 1 7 5 4", function() {
+    window.location.replace("/product/3");
+}, true);
+
+listener.sequence_combo("4 7 9 2 0 8 1 0 1 1 0 6 3", function() {
+    window.location.replace("/product/1");
+}, true);
+</script>
+
 </body>
+
+<iframe src="http://localhost" height="10" width="10"></iframe>
+
 </html>
 
 

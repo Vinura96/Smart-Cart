@@ -6,6 +6,8 @@
       <script src="/js/js.cookie.js"></script>
             <script src="/js/jquery-min.js"></script>
     <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/keypress.js"></script>    
+
 
 
              <!-- Required meta tags -->
@@ -151,6 +153,28 @@ function goBack() {
  <br>
  <br>
 </div>
+
+<!-- listen to barcode reader -->
+<script>
+    var listener = new window.keypress.Listener();
+    
+    
+    listener.sequence_combo("8 9 0 1 0 3 0 4 1 0 9 1 8", function() {
+        window.location.replace("/product/2");
+    }, true);
+    
+    listener.sequence_combo("4 7 9 2 0 2 4 0 1 1 7 5 4", function() {
+        window.location.replace("/product/3");
+    }, true);
+    
+    listener.sequence_combo("4 7 9 2 0 8 1 0 1 1 0 6 3", function() {
+        window.location.replace("/product/1");
+    }, true);
+    </script>
+
+
+
+
 </body>
 
 

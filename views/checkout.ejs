@@ -8,6 +8,7 @@
               <!--firebase script-->
  
               <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script> 
+              <script src="/js/keypress.js"></script>  
               <script>
               
               
@@ -98,9 +99,27 @@ bill id must be passed to this page
 <div>
 <script>
     //alternate code for verify button
-	//product id passed from barcode scanner. Hardcoded for now. Actual functionality: when item is scanned, the below post function is automatically called.
-	$(document).ready(function(){
-    $('#verify').click(function(){
+	//product id passed from barcode scanner.
+    
+    var listener = new window.keypress.Listener();
+    
+    
+    listener.sequence_combo("8 9 0 1 0 3 0 4 1 0 9 1 8", function() {
+        prodID = 2;
+        verifyItem();
+    }, true);
+    
+    listener.sequence_combo("4 7 9 2 0 2 4 0 1 1 7 5 4", function() {
+        prodID = 3;
+        verifyItem();
+    }, true);
+    
+    listener.sequence_combo("4 7 9 2 0 8 1 0 1 1 0 6 3", function() {
+        prodID = 1;
+        verifyItem();
+    }, true);
+
+    function verifyItem(){
         console.log(prodID)
         $.post("/checkout",
         {
@@ -115,8 +134,8 @@ bill id must be passed to this page
         		swal('Warning. Item not verified');
         	}
         });
-    });
-	});
+    }
+ 
 
 
 	//finalize bill function

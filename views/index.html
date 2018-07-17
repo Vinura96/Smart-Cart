@@ -1,0 +1,41 @@
+
+
+<script src="/js/js.cookie.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/sweetalert.min.js"></script>
+
+
+
+<script>
+    console.log("dkafnjdafndfnjds")
+    
+    //maintain  a socket and display queue notificaitions to user
+  var socket = io.connect('http://localhost');
+
+
+      socket.on('userId', function(id) {
+          console.log('id= '+ id);
+          console.log('cookie:'+Cookies.get("user_id"))
+        if (id == Cookies.get("user_id")){
+            
+            swal({
+                title: "Are you done shopping?",
+                text: "A counter has just become available. Please confirm within twenty seconds",
+                icon: "info",
+                timer: 20000,
+                dangerMode: true
+                })
+                .then(willJoin => {
+                if (willJoin) {
+                    swal("Done!", "Please approach counter one", "success");
+                    socket.emit('userAccepted', Cookies.get("user_id"));
+                } else{
+                    socket.emit('userRejected', Cookies.get("user_id"));
+                    swal("that\'s okay", "Take your time, you will be notified when another counter is available");
+                    
+                }
+                });
+        }
+    });
+
+</script>

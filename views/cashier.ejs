@@ -1,0 +1,31 @@
+<html>
+<head>
+    	<link rel=stylesheet type=text/css href="/css/login.css">
+    <script src="/js/sweetalert.min.js"></script>
+    <script src="/js/jquery-min.js"></script>
+</head>
+
+<div class="login-page">
+    <h1 class="message" align='center' >Counter One</h1>
+    <h2 class="message" align=center>Press "Next Customer" when you are ready to proceed to the next customer. </h2>
+  <div class="form">
+  
+<!--next customer button--> 
+      <script>
+          $(document).ready(function(){
+            $('#ready').click(function(){
+              $.post("/ready",
+                {
+                  id: 1
+                },
+                function(data,status){
+                    swal("Please wait for the next customer");
+                });
+              });
+            });
+        
+          </script>
+<button id='ready'>Next Customer</button>
+  </div>
+</div>
+</html>

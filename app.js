@@ -31,87 +31,7 @@ var array1=[];
 	//firebase database
 	var database = firebase.database();
 
-	//write to firebase
-/* 	function writeProductData(key) {
-		firebase.database().ref('products/').push().set({
-			name: key
-		});
-		} */
 
-
-
-/*
-let db = new sqlite3.Database('./supermarket.db', (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-  console.log('Connected to the supermarket database.');
-});
-
-db.serialize(() => {
-  db.each(`SELECT id as id,
-           FROM ad`, (err, row) => {
-    if (err) {
-      console.error(err.message);
-    }
-    array1.push({name: row.img, age: row.id});
-  });
-});
-
-  let sql = `SELECT img img, id id FROM ad WHERE img = 'ok'`;
-
-  db.all(sql, [], (err, rows) =>{
-	if(err) {
-		console.log(err.message);
-	}
-	else{
- 	rows.forEach((row) => {
-		console.log(row.id);
-});
- }
-});
-
-
-  //insert
-  db.run(`INSERT INTO ad(img, id) VALUES(?,?)`, ['fucked', 8], function(err) {
-    if (err) {
-      return console.log(err.message);
-    }
-    // get the last insert id
-    console.log(`A row has been inserted with rowid ${this.lastID}`);
-  });
-
-
-//udpate
-let sql2 = `UPDATE ad
-            SET img = 'peachy'
-            WHERE img = 'fucked'`;
- 
-db.run(sql2, function(err) {
-  if (err) {
-    return console.error(err.message);
-  }
-  console.log(`Row(s) updated: ${this.changes}`);
- 
-});
-
-
-
-// delete a row based on id
-db.run(`DELETE FROM ad WHERE id=2`, function(err) {
-  if (err) {
-    return console.error(err.message);
-  }
-  console.log(`Row(s) deleted ${this.changes}`);
-});
- 
-db.close((err) => {
-  if (err) {
-    console.error(err.message);
-  }
-  console.log('Close the database connection.');
-});
-*/
 
 //view engine
 app.set('view engine', 'ejs');
@@ -133,9 +53,11 @@ ap.use(funciton(res, req, next){
 
 //var per= [{name:'haritha', age:5}, {name:'myg', age:2}, {name:'fea', age:6}, {name:'hdsd', age:4}];
 
+/*
 app.get('/', function(req, res, next){
     res.render('index', {name:'haritha', per:array1});
 })
+*/
 
 
 //display login page
@@ -143,6 +65,11 @@ app.get('/login', function(req, res, next){
     res.render('login',{status:req.query.status});
 })
 
+
+//display cashier's page
+app.get('/cashier', function(req, res, next){
+	res.render('cashier',{status:req.query.status});
+})
 
 
 //display IR beam ad
@@ -500,12 +427,43 @@ app.post('/queue', function(req, res, next) {
 
 
 
-		db.run(`INSERT INTO queue(customer_id, queueTime, counter_assigned) VALUES(?, DATETIME('now'), 0)`, [req.body.id], function(err) {
+		db.run(`INSERT INTO queue(customer_id, queueTime, counter_assigned) VALUES(?, strftime('%s','now'), 0)`, [req.body.id], function(err) {
     		if (err) {
       			return console.log(err.message);
     		}
     		// get the last insert id
-    		console.log(`new queue entry created with id ${this.lastID}`);
+				console.log(`new queue entry created with id ${this.lastID}`);
+				setTimeout(function(arg){
+					console.log(arg);
+				},
+				1500, 'damn son');
+
+				})
+  		});
+
+
+
+//leave queue
+app.post('/leaveQueue', function(req, res, next) {
+
+
+	//remove queue entry
+		let db = new sqlite3.Database('./supermarket.db', (err) => {
+		  if (err) {
+		    //console.error(err.message);
+		  }
+		  console.log('Connected to the supermarket database.');
+			});
+
+
+
+
+		db.run(`DELETE FROM queue WHERE customer_id=?`, [req.body.id], function(err) {
+    		if (err) {
+      			return console.log(err.message);
+    		}
+    		// get the removed id
+    		console.log(`queue entry deleted with id ${this.lastID}`);
   		});
 });
 
@@ -787,12 +745,7 @@ app.get('/prodxprod', function(req, res, next){
 					//create a new entry in the product x product data table
 					function(count) {
 					console.log(id2, count, id1);
-		 			db.run(`INSERT INTO prod_x_prod_data(product_id, rel_product_id, connections) VALUES(?, ?,  ?)`, [id1, id2, count], function(err) {
-			    	if (err) {
-			      		return console.log(err.message);
-			    	}
-			    	console.log(`new connection created with id ${this.lastID}`);
-			  		});	
+	
 			  		}
 			  		];
 			  		async.waterfall(asyncOps, function (err, results){
@@ -808,12 +761,126 @@ app.get('/prodxprod', function(req, res, next){
 	}
 });
 
+});
 
 
 
+
+//update cashier status
+app.post('/ready', function(req, res, next) {
+
+	
+		let db = new sqlite3.Database('./supermarket.db', (err) => {
+		  if (err) {
+		    //console.error(err.message);
+		  }
+		  console.log('Connected to the supermarket database.');
+			});
+
+
+		db.run(`UPDATE counter SET status="ready" WHERE id=?`, [req.body.id], function(err) {
+    		if (err) {
+      			return console.log(err.message);
+    		}
+    		// show the last update id
+				console.log(`updated counter with id ${this.lastID}`);
+    		
+			});
+			var customerFound= false;
+
+			function alertCustomer(){
+				db.get(`SELECT customer_id customer_id from queue WHERE queueTime = (SELECT min(queueTime) FROM queue)`, (err, row) =>{
+					if (err) {
+						//console.error(err.message);
+					}else{
+					console.log(row.customer_id);
+					io.emit('userId', row.customer_id);
+					}
+				});
+			}
+		
+			alertCustomer();
+			res.send(202);
+});
+
+
+
+// Loading socket.io
+var server = require('http').Server(app);
+global.io = require('socket.io')(server);
+
+app.get('/', function (req, res) {
+  res.sendfile(__dirname + '/views/index.html');
+});
+
+// When a client connects, we note it in the console
+io.on('connection', function (socket) {
+
+
+	socket.on('userAccepted', function(userID){
+		console.log("user accepted"+ userID);
+			//create a new bill
+			let db = new sqlite3.Database('./supermarket.db', (err) => {
+				if (err) {
+					//console.error(err.message);
+				}
+				console.log('Connected to the supermarket database.');
+				});
+	
+	
+
+				//delete queue entry
+				db.run(`DELETE FROM queue WHERE customer_id=?`, [userID], function(err) {
+					if (err) {
+							return console.log(err.message);
+					}
+					// get the removed id
+					console.log(`queue entry deleted with id ${this.lastID}`);
+				});	
+		});
+
+
+		socket.on('userRejected', function(userID){
+			console.log("user rejected"+ userID);
+				//create a new bill
+				let db = new sqlite3.Database('./supermarket.db', (err) => {
+					if (err) {
+						//console.error(err.message);
+					}
+					console.log('Connected to the supermarket database.');
+					});
+		
+		//reset the queue time of user
+				db.run(`UPDATE queue SET queueTime=strftime('%s','now') WHERE customer_id=?`, [userID], function(err) {
+						if (err) {
+								return console.log(err.message);
+						}
+						// show the last update id
+						console.log(`updated queue entry of user id ${this.lastID}`);
+						
+						//alert next customer
+						function alertCustomer(){
+							db.get(`SELECT customer_id customer_id from queue WHERE queueTime = (SELECT min(queueTime) FROM queue)`, (err, row) =>{
+								if (err) {
+									//console.error(err.message);
+								}else{
+								console.log(row.customer_id);
+								io.emit('userId', row.customer_id);
+								}
+							});
+						}
+					
+						alertCustomer();
+					});
+		
+			});
 
 });
 
+
+
+
+server.listen(80);
 
 
 app.listen(3000, function(){
@@ -821,7 +888,6 @@ app.listen(3000, function(){
         })
 
 
-//llisten to firebase server
 		
 
 
