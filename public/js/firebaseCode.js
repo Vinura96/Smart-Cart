@@ -21,7 +21,7 @@
                     if (count>1){
                         if (key== "signal"){
                             window.location.replace("/product/2");
-                        } else if (key== "ambewela"){
+                        } else if (key== "milo"){
                             window.location.replace("/product/3");
                         } else if (key== "sunlight"){
                             window.location.replace("/product/1");

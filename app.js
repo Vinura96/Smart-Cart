@@ -299,7 +299,7 @@ app.post('/self', function(req, res, next) {
 		let db = new sqlite3.Database('./supermarket.db', (err) => {
 		  if (err) {
 		    //console.error(err.message);
-		  }
+		  }else
 		  console.log('Connected to the supermarket database.');
 			});
 
@@ -786,14 +786,18 @@ app.post('/ready', function(req, res, next) {
 				console.log(`updated counter with id ${this.lastID}`);
     		
 			});
-			var customerFound= false;
+			global.customerId;
 
 			function alertCustomer(){
 				db.get(`SELECT customer_id customer_id from queue WHERE queueTime = (SELECT min(queueTime) FROM queue)`, (err, row) =>{
 					if (err) {
 						//console.error(err.message);
-					}else{
+					}else if (row==undefined){
+						console.log("No customers found")
+					}
+					else{
 					console.log(row.customer_id);
+					customerId=row.customer_id;
 					io.emit('userId', row.customer_id);
 					}
 				});
@@ -833,9 +837,10 @@ io.on('connection', function (socket) {
 				db.run(`DELETE FROM queue WHERE customer_id=?`, [userID], function(err) {
 					if (err) {
 							return console.log(err.message);
-					}
+					}else{
 					// get the removed id
 					console.log(`queue entry deleted with id ${this.lastID}`);
+					}
 				});	
 		});
 
@@ -854,7 +859,7 @@ io.on('connection', function (socket) {
 				db.run(`UPDATE queue SET queueTime=strftime('%s','now') WHERE customer_id=?`, [userID], function(err) {
 						if (err) {
 								return console.log(err.message);
-						}
+						}else
 						// show the last update id
 						console.log(`updated queue entry of user id ${this.lastID}`);
 						
@@ -863,9 +868,21 @@ io.on('connection', function (socket) {
 							db.get(`SELECT customer_id customer_id from queue WHERE queueTime = (SELECT min(queueTime) FROM queue)`, (err, row) =>{
 								if (err) {
 									//console.error(err.message);
-								}else{
-								console.log(row.customer_id);
+								}else if (row==undefined){
+									console.log("No customers left")
+								}
+								else{
+									console.log("old customer id: " + customerId)
+								console.log("new: " + row.customer_id);
+								
+								if (customerId == row.customer_id){
+									setTimeout(function(){
+										io.emit('userId', row.customer_id);
+									}, 20000)
+								} else{
+								customerId=row.customer_id;
 								io.emit('userId', row.customer_id);
+								}
 								}
 							});
 						}

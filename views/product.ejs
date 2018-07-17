@@ -170,6 +170,42 @@ function goBack() {
     listener.sequence_combo("4 7 9 2 0 8 1 0 1 1 0 6 3", function() {
         window.location.replace("/product/1");
     }, true);
+
+   //listen to add to cart button
+    listener.sequence_combo("a d d", function() {
+      
+      var qty = 1
+      $.post("/addToCart",
+        {
+          user_id: Cookies.get("user_id"),
+          id: <%=product.id%>,
+          qty: qty,
+          bill: Cookies.get('bill')
+        },
+        function(data,status){
+          alert(status)
+            swal("Added to cart");
+        });
+        swal("Added to cart");
+    }, true);
+
+     //listen to remove from cart button
+    listener.sequence_combo("r e m", function() {
+      $.post("/removeFromCart", {
+          user_id: Cookies.get("user_id"),
+          id: <%=product.id%>,
+          bill: Cookies.get('bill')
+        }, 
+        function(data,status){
+          console.log(status);
+          if (data=='success'){
+            swal("Removed from cart");
+          }
+            else{
+              swal("Item not in cart");
+            }
+          });
+    }, true);
     </script>
 
 
