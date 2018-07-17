@@ -169,7 +169,11 @@ function carousel() {
           id: <%=id%>
         },
         function(data,status){
-            swal("You've been entered to the queue. You wil be notified when a counter is available. Click leave queue to exit from queue.");
+            swal("You've been entered to the queue. You wil be notified when a counter is available. Click leave queue to exit from queue.", {
+                icon: "success",
+                timer: 2500,
+                button: false,
+            });
             Cookies.set('queued', 1, { path: '/' });
         });
         	this.disabled = true;

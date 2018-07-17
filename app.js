@@ -437,6 +437,7 @@ app.post('/queue', function(req, res, next) {
 					console.log(arg);
 				},
 				1500, 'damn son');
+				res.send(201, this.lastID);
 
 				})
   		});
@@ -463,7 +464,8 @@ app.post('/leaveQueue', function(req, res, next) {
       			return console.log(err.message);
     		}
     		// get the removed id
-    		console.log(`queue entry deleted with id ${this.lastID}`);
+				console.log(`queue entry deleted with id ${this.lastID}`);
+				res.send(201, this.lastID);
   		});
 });
 
